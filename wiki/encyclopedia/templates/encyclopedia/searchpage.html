@@ -1,0 +1,21 @@
+{% extends 'encyclopedia/layout.html' %}
+
+{% block title %}
+    Result
+{% endblock %}
+
+{% block body %}
+    {% if search_result %}
+        <ul>
+            {% for entry in search_result %}
+                <li>{{ entry }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">What a bad miss buddy!</h4>
+            No results have been found
+
+        </div>
+    {% endif %} 
+{% endblock %}
