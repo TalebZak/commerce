@@ -17,7 +17,7 @@ def search_entry(search_string):
     entries = list_entries()
     result = []
     for entry in entries:
-        if entry.find(search_string) != -1:
+        if entry.lower().startswith(search_string):
             result.append(entry)
     return result
 
