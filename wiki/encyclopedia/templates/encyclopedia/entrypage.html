@@ -5,7 +5,7 @@
     {% if not entry %}
         Error!
     {% else %}
-        {{ title }}
+        {{ entry }}
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -21,12 +21,8 @@
             Entry found!
 
         </div>
-        <br>
-        <input type="button" class="btn btn-outline-dark"
-           value="edit" onclick="location.href='{% url 'add' %}'">
-        <div>{{ entry|safe }}</div>
+        <div>{{ entry }}</div>
 
     {% endif %}
-
 
 {% endblock %}
