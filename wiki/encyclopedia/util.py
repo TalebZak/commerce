@@ -1,7 +1,6 @@
 import re
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from random import choice
 
 
 def list_entries():
@@ -32,12 +31,6 @@ def save_entry(title, content):
     if default_storage.exists(filename):
         default_storage.delete(filename)
     default_storage.save(filename, ContentFile(content))
-
-
-def random_entry():
-    entries_list = list_entries()
-    entry = choice(entries_list)
-    return entry
 
 
 def get_entry(title):
