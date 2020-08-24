@@ -1,5 +1,4 @@
 {% extends 'encyclopedia/layout.html' %}
-{% load crispy_forms_tags %}
 {% block title %}
     Add page
 {% endblock %}
@@ -14,7 +13,7 @@
                 This page already exists
             </div>
         {% endif %}
-        {{ addform|crispy }}
+        {{ addform }}
         <input name="save" type="submit"
                class="btn btn-outline-dark">
     </form>

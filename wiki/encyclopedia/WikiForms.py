@@ -2,9 +2,7 @@ from django import forms
 
 
 class NewSearchForm(forms.Form):
-    search_string = forms.CharField(label="Search an entry",
-                                    widget=forms.TextInput(attrs={'placeholder': 'Search Wiki',
-                                                                  'style': 'width:100%'}))
+    search_string = forms.CharField(label="Search an entry", widget=forms.TextInput)
 
 
 class NewTextForm(forms.Form):

@@ -5,19 +5,12 @@
 {% endblock %}
 
 {% block body %}
-        {% if entries %}
-            <div class="alert alert-success" role="alert">
-                Results found
-            </div>
-            <ul>
-                {% for entry in entries %}
-                    <a href="{% url 'entry' entry %}"> <li>{{ entry }}</li> </a>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <div class="alert alert-danger" role="alert">
-                Sorry buddy no result found
-            </div>
-        {% endif %}
+
+        <ul>
+            {% for entry in search_result %}
+                <li>{{ entry }}</li>
+            {% endfor %}
+        </ul>
+
 
 {% endblock %}
