@@ -1,4 +1,5 @@
 {% extends "auctions/layout.html" %}
+{% load crispy_forms_tags %}
 
 {% block body %}
 
@@ -10,7 +11,7 @@
 
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
-        <div class="form-group">
+        <!--<div class="form-group">
             <input class="form-control" autofocus type="text" name="username" placeholder="Username">
         </div>
         <div class="form-group">
@@ -21,7 +22,22 @@
         </div>
         <div class="form-group">
             <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+        </div>-->
+        <div class = "col-4">
+            {{ RegistrationForm.first_name | as_crispy_field }}
+            {{ RegistrationForm.last_name | as_crispy_field }}
+            {{ RegistrationForm.username | as_crispy_field }}
         </div>
+        <div class = "col-4">
+            {{ RegistrationForm.email | as_crispy_field }}
+        </div>
+        <div class = "col-4">
+            {{ RegistrationForm.password | as_crispy_field }}
+        </div>
+        <div class = "col-4">
+            {{ RegistrationForm.confirmation | as_crispy_field }}
+        </div>
+
         <input class="btn btn-primary" type="submit" value="Register">
     </form>
 

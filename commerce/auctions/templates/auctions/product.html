@@ -1,0 +1,9 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+{% block body %}
+    {{ product.price }}
+    {{ product.description }}
+    <h1>owned by {{ product.owner }}</h1>
+{% endblock %}

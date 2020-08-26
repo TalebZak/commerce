@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,13 +17,16 @@
         Not signed in.
     {% endif %}
 </div>
-<ul class="nav">
+<ul>
     <li class="nav-item">
         <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
     </li>
     {% if user.is_authenticated %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'addlisting' %}">Add a new listing</a>
         </li>
     {% else %}
         <li class="nav-item">
