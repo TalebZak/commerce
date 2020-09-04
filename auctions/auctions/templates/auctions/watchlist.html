@@ -1,0 +1,13 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+    Watchlist
+{% endblock %}
+{% block body %}
+    {% if products %}
+        {% for product in products %}
+            <a href="{% url 'product' product %}"><h1>{{ product }}</h1></a>
+        {% endfor %}
+    {% else %}
+        watchlist is empty
+    {% endif %}
+{% endblock %}

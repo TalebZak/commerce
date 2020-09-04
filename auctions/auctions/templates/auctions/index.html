@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% for product in products %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <div class="card" style="width: 18rem;">
+                  <img src="..." class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ product }}</h5>
+                      <p class="card-text bg-light" style="transform: rotate(0);">
+                          {{ product.price }}$
+                      </p>
+                    <p class="card-text">{{product.description}}</p>
+                    <a href="{% url 'product' product.name %}" class="btn btn-primary stretched-link">Check</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+    <!---<form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {{ selectionform }}
+    </form>--->
+{% endblock %}

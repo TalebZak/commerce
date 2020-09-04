@@ -1,0 +1,71 @@
+{% extends 'auctions/layout.html' %}
+{% load crispy_forms_tags %}
+{% load customtags %}
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+{% block body %}
+    {% if request.user == product.owner %}
+        <a href="{% url 'close_listing' product.name %}">Close listing</a>
+    {% endif %}
+    <div>
+        {{ product.price }}
+        {{ product.description }}
+        <img src={{ product.image }}>
+        <h1>owned by: {{ product.owner }}</h1>
+
+
+    </div>
+
+    <h1>
+        Comments:
+    </h1>
+    {% if user.is_authenticated %}
+        {% if watchlist|search:product.id%}
+            <a href="{% url 'remove_from_watchlist' product.name %}">Remove</a>
+        {% else %}
+            <a href="{% url 'add_watchlist' product%}">ADD</a>
+        {% endif %}
+        <form method="post">
+        {% csrf_token %}
+        <div class="col-4">
+            {{ commentform|crispy }}
+        </div>
+
+        <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+        <form action="{% url 'make_bid' product.name%}" method="post">
+            {% csrf_token %}
+            <div class="col-4">
+                {{ biddingform|crispy }}
+            </div>
+            <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+    {% endif %}
+    {% if comments %}
+    {% for comment in comments  %}
+        <div class="comments" style="padding: 10px;">
+                <h5>BY:{{ comment.writer }}</h5>
+                    Subject:{{ comment.subject }}
+                {{ comment.body|linebreaks }}
+
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <h1>No comments for now</h1>
+    {% endif %}
+
+    {% if product.status %}
+        {% if bids %}
+        {% for bid in bids %}
+            this bid is {{ bid.value }}, by {{ bid.bidder }}
+        {% endfor %}
+        {% else %}
+            no bids currently
+        {% endif %}
+    {% else %}
+        you can't make bids anymore
+    {% endif %}
+
+{% endblock %}
