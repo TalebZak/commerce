@@ -5,8 +5,9 @@ register = template.Library()
 
 
 @register.filter(name='search')
-def is_in(value, product_id):
+def is_in(value, product_name):
+    product = Product.objects.get(name=product_name)
     for element in value:
-        if product_id == element.id:
+        if product == element.product:
             return True
     return False

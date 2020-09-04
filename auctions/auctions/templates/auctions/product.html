@@ -21,7 +21,7 @@
         Comments:
     </h1>
     {% if user.is_authenticated %}
-        {% if watchlist|search:product.id%}
+        {% if watchlist|search:product.name%}
             <a href="{% url 'remove_from_watchlist' product.name %}">Remove</a>
         {% else %}
             <a href="{% url 'add_watchlist' product%}">ADD</a>

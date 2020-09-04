@@ -11,7 +11,7 @@ class User(AbstractUser):
 class Category(models.TextChoices):
     FURNITURE = 'FU', _('Furniture')
     CLOTHING = 'CL', _('Clothing')
-    ENTERTAINMENT = 'EN', _('Entertainment'),
+    ENTERTAINMENT = 'EN', _('Entertainment')
     OTHER = 'OTH', _('Other')
 
 
