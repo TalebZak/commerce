@@ -3,6 +3,7 @@
 {% block body %}
     <h2>Active Listings</h2>
     {% for product in products %}
+        {% if product.status %}
         <div class="d-flex flex-row">
             <div class="p-2">
                 <div class="card" style="width: 18rem;">
@@ -18,6 +19,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+
 
 
     {% endfor %}

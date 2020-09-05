@@ -25,7 +25,7 @@ class Product(models.Model):
     date_posted = models.DateField(auto_now=True)
     description = models.TextField(default="No description for this listing")
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
-    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    image = models.ImageField(upload_to='auctions/static/images', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"

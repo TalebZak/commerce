@@ -1,0 +1,15 @@
+{% extends 'auctions/layout.html' %}
+<html lang="en">
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Results</title>
+{% endblock %}
+{% block body %}
+    {% if products %}
+        {% for product in products  %}
+            {{ product }}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}
+</html>

@@ -1,0 +1,14 @@
+{% extends 'auctions/layout.html' %}
+<html lang="en">
+{% block title %}
+    <meta charset="UTF-8">
+    <title>Category</title>
+{% endblock %}
+{% block body %}
+    <form action="{% url 'category_select' %}" method="post">
+        {% csrf_token %}
+        {{categoryform}}
+        <input class="btn btn-primary" type="submit" value="Add">
+    </form>
+{% endblock %}
+</html>

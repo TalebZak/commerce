@@ -9,12 +9,11 @@
         <a href="{% url 'close_listing' product.name %}">Close listing</a>
     {% endif %}
     <div>
+        {{ product.name }}
         {{ product.price }}
         {{ product.description }}
         <img src={{ product.image }}>
         <h1>owned by: {{ product.owner }}</h1>
-
-
     </div>
 
     <h1>
@@ -24,7 +23,7 @@
         {% if watchlist|search:product.name%}
             <a href="{% url 'remove_from_watchlist' product.name %}">Remove</a>
         {% else %}
-            <a href="{% url 'add_watchlist' product%}">ADD</a>
+            <a href="{% url 'add_watchlist' product.name%}">ADD</a>
         {% endif %}
         <form method="post">
         {% csrf_token %}
@@ -34,33 +33,35 @@
 
         <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
         </form>
-        <form action="{% url 'make_bid' product.name%}" method="post">
-            {% csrf_token %}
-            <div class="col-4">
-                {{ biddingform|crispy }}
-            </div>
-            <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-        </form>
     {% endif %}
-    {% if comments %}
-    {% for comment in comments  %}
-        <div class="comments" style="padding: 10px;">
+    <div>
+        {% if comments %}
+            {% for comment in comments  %}
+                <div class="comments" style="padding: 10px;">
                 <h5>BY:{{ comment.writer }}</h5>
-                    Subject:{{ comment.subject }}
+                Subject:{{ comment.subject }}
                 {{ comment.body|linebreaks }}
-
+                </div>
             {% endfor %}
-        </div>
 
-    {% else %}
-        <h1>No comments for now</h1>
+        {% else %}
+            <h1>No comments for now</h1>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+        <form action="{% url 'make_bid' product.name%}" method="post">
+        {% csrf_token %}
+        <div class="col-4">
+            {{ biddingform|crispy }}
+        </div>
+        <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
     {% endif %}
 
     {% if product.status %}
-        {% if bids %}
-        {% for bid in bids %}
-            this bid is {{ bid.value }}, by {{ bid.bidder }}
-        {% endfor %}
+        {% if currentbid %}
+            <h1>current bid made by {{ currentbid.bidder }}, value: {{ currentbid.value }}</h1>
         {% else %}
             no bids currently
         {% endif %}

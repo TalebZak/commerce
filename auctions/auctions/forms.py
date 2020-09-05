@@ -38,7 +38,6 @@ class CommentForm(ModelForm):
 class CategorySelectionForm(Form):
     category = ChoiceField(choices=Category)
 
-
 class LoginForm(ModelForm):
     class Meta:
         model = User

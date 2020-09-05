@@ -67,6 +67,28 @@ def add_listing(request):
     })
 
 
+def category_product(request, category):
+    category_products = Product.objects.filter(product_type=category)
+    return render(request, "auctions/category_products.html", {
+        "products": category_products
+    })
+
+
+def select_category(request):
+    if request.method == "POST":
+        categoryform = CategorySelectionForm(request.POST)
+        if categoryform.is_valid():
+            category = categoryform.cleaned_data["category"]
+            return HttpResponseRedirect(reverse('category_products', args=(category,)))
+
+        return render(request, "auctions/category_filter.html", {
+            "categoryform": CategorySelectionForm
+        })
+    return render(request, "auctions/category_filter.html", {
+        "categoryform": CategorySelectionForm
+    })
+
+
 def watchlist(request):
     my_watchlist = Watchlist.objects.filter(user=request.user)
     return render(request, "auctions/watchlist.html", {
@@ -130,8 +152,8 @@ def product(request, product_name):
             new_comment.writer = request.user
             new_comment.save()
     return render(request, "auctions/product.html", {
-        "watchlist":Watchlist.objects.filter(user=request.user),
-        "bids": product_bids,
+        "watchlist": Watchlist.objects.filter(user=request.user),
+        "currentbid": product_bids.order_by('-value').first(),
         "biddingform": BiddingForm(),
         "commentform": CommentForm(),
         "comments": comments,
