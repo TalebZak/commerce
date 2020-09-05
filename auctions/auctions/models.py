@@ -47,7 +47,7 @@ class Watchlist(models.Model):
 
 class Bid(models.Model):
     value = models.DecimalField(max_digits=19, decimal_places=2, default=0)
-    bidder = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     listing = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="bids")
 
     def __str__(self):
