@@ -18,7 +18,7 @@ class Category(models.TextChoices):
 class Product(models.Model):
     status = models.BooleanField(default=True)
     product_type = models.CharField(max_length=3,
-                                    choices=Category.choices, default='OTH')
+                                    choices=Category.choices)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=78)
     price = models.DecimalField(max_digits=19, decimal_places=2, default=0)

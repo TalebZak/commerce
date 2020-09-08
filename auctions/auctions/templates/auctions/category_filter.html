@@ -8,7 +8,7 @@
     <form action="{% url 'category_select' %}" method="post">
         {% csrf_token %}
         {{categoryform}}
-        <input class="btn btn-primary" type="submit" value="Add">
+        <input class="btn btn-primary" type="submit" value="Filter">
     </form>
 {% endblock %}
 </html>

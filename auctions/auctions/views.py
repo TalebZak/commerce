@@ -78,7 +78,7 @@ def select_category(request):
     if request.method == "POST":
         categoryform = CategorySelectionForm(request.POST)
         if categoryform.is_valid():
-            category = categoryform.cleaned_data["category"]
+            category = categoryform.cleaned_data["product_type"]
             return HttpResponseRedirect(reverse('category_products', args=(category,)))
 
         return render(request, "auctions/category_filter.html", {
