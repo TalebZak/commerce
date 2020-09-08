@@ -10,31 +10,9 @@ from .models import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "products": Product.objects.all()
+        "products": Product.objects.all(),
+        "categoryform": CategorySelectionForm
     })
-
-
-"""def index(request):
-
-    if request.method == "POST":
-        form = CategorySelectionForm(request.POST)
-
-        if form.is_valid():
-            category = form.cleaned_data['Category']
-            result_listings = Product.objects.filter(product_type=category)
-            return render(request, "auctions/index.html", {
-                "selectionform": form,
-                "products": result_listings
-            })
-        return render(request, "auctions/index.html", {
-            "selectionform": form,
-            "products": Product.objects.all()
-        })
-    return render(request, "auctions/index.html", {
-        "selectionform": CategorySelectionForm(),
-        "products": Product.objects.all()
-    })
-"""
 
 
 def close_listing(request, product_name):
@@ -53,7 +31,7 @@ def remove_from_watchlist(request, product_name):
 
 def add_listing(request):
     if request.method == "POST":
-        form = ListingCreationForm(request.POST)
+        form = ListingCreationForm(request.POST, request.FILES)
         if form.is_valid():
             newlisting = form.save(commit=False)
             newlisting.owner = request.user
@@ -78,15 +56,11 @@ def select_category(request):
     if request.method == "POST":
         categoryform = CategorySelectionForm(request.POST)
         if categoryform.is_valid():
-            category = categoryform.cleaned_data["category"]
+            category = categoryform.cleaned_data["product_type"]
             return HttpResponseRedirect(reverse('category_products', args=(category,)))
 
-        return render(request, "auctions/category_filter.html", {
-            "categoryform": CategorySelectionForm
-        })
-    return render(request, "auctions/category_filter.html", {
-        "categoryform": CategorySelectionForm
-    })
+        return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('index'))
 
 
 def watchlist(request):

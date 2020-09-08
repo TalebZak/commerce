@@ -1,13 +1,22 @@
 {% extends "auctions/layout.html" %}
-
+{% load crispy_forms_tags %}
 {% block body %}
+    <form action="{% url 'category_select' %}" method="post">
+        {% csrf_token %}
+        <div class = "col-1">
+            {{categoryform|crispy}}
+            <input class="btn btn-primary" type="submit" value="Filter">
+        </div>
+
+
+    </form>
     <h2>Active Listings</h2>
     {% for product in products %}
         {% if product.status %}
         <div class="d-flex flex-row">
             <div class="p-2">
                 <div class="card" style="width: 18rem;">
-                  <img src="..." class="card-img-top" alt="...">
+                  <img src="{{product.image.url}}" class="card-img-top" alt="{{product.name}}">
                   <div class="card-body">
                     <h5 class="card-title">{{ product }}</h5>
                       <p class="card-text bg-light" style="transform: rotate(0);">
@@ -24,8 +33,4 @@
 
 
     {% endfor %}
-    <!---<form action="{% url 'index' %}" method="post">
-        {% csrf_token %}
-        {{ selectionform }}
-    </form>--->
 {% endblock %}

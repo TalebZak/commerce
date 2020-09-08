@@ -35,8 +35,11 @@ class CommentForm(ModelForm):
         exclude = ['writer', 'listing']
 
 
-class CategorySelectionForm(Form):
-    category = ChoiceField(choices=Category)
+class CategorySelectionForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['product_type']
+
 
 class LoginForm(ModelForm):
     class Meta:
