@@ -12,4 +12,3 @@ admin.site.register(Bid)
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("price", "date_posted", "description", "image")
-    prepopulated_fields = {"slug": ("name",)}

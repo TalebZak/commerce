@@ -24,16 +24,10 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=19, decimal_places=2, default=0)
     date_posted = models.DateField(auto_now=True)
     description = models.TextField(default="No description for this listing")
-    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
-    image = models.ImageField(upload_to='auctions/static/images', null=True, blank=True)
+    image = models.ImageField(upload_to='images/%Y/%m/%D/', null=True, blank=True, default='images/no-image.png')
 
     def __str__(self):
         return f"{self.name}"
-
-    def save(self, *args, **kwargs):  # new
-        if not self.slug:
-            self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
 
 
 class Watchlist(models.Model):
