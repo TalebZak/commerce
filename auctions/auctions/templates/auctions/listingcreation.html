@@ -6,7 +6,9 @@
 {% block body %}
     <form action="{% url 'addlisting' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ addform|crispy }}
+        <div class="col-4">
+            {{ addform|crispy }}
+        </div>
         <input class="btn btn-primary" type="submit" value="Add">
     </form>
 

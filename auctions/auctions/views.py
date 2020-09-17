@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from .forms import *
 from .models import *
@@ -15,15 +15,15 @@ def index(request):
     })
 
 
-def close_listing(request, product_name):
-    product = Product.objects.get(name=product_name)
+def close_listing(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
     product.status = False
     product.save(update_fields=['status'])
-    return HttpResponseRedirect(reverse('product', args=(product_name,)))
+    return HttpResponseRedirect(reverse('product', args=(product_slug,)))
 
 
-def remove_from_watchlist(request, product_name):
-    product = Product.objects.get(name=product_name)
+def remove_from_watchlist(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
     watchlist_item = Watchlist.objects.get(product=product)
     watchlist_item.delete()
     return HttpResponseRedirect(reverse('watchlist'))
@@ -36,7 +36,7 @@ def add_listing(request):
             newlisting = form.save(commit=False)
             newlisting.owner = request.user
             newlisting.save()
-            return HttpResponseRedirect(reverse('product', args=(newlisting.name,)))
+            return HttpResponseRedirect(reverse('product', args=(newlisting.get_url_path(),)))
         return render(request, "auctions/listingcreation.html", {
             "addform": form
         })
@@ -63,26 +63,25 @@ def select_category(request):
     return HttpResponseRedirect(reverse('index'))
 
 
+@login_required
 def watchlist(request):
     my_watchlist = Watchlist.objects.filter(user=request.user)
     return render(request, "auctions/watchlist.html", {
-        "products": my_watchlist
+        "products": [element.product for element in my_watchlist]
     })
 
 
 @login_required
-def add_watchlist(request, product_name):
-    product = Product.objects.get(name=product_name)
+def add_watchlist(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
     user = request.user
-
     new_watchlist_element = Watchlist.objects.create(user=user, product=product)
-
     return HttpResponseRedirect(reverse('watchlist'))
 
 
 @login_required
-def make_bid(request, product_name):
-    theproduct = Product.objects.get(name=product_name)
+def make_bid(request, product_slug):
+    theproduct = get_object_or_404(Product, slug=product_slug)
     product_bids = theproduct.bids.all()
     comments = theproduct.comments.all()
     if request.method == "POST":
@@ -102,7 +101,7 @@ def make_bid(request, product_name):
             newbid.bidder = request.user
             newbid.listing = theproduct
             newbid.save()
-            return HttpResponseRedirect(reverse('product', args=(product_name,)))
+            return HttpResponseRedirect(reverse('product', args=(product_slug,)))
     return render(request, "auctions/product.html", {
         "watchlist": Watchlist.objects.filter(user=request.user),
         "bids": product_bids,
@@ -113,8 +112,8 @@ def make_bid(request, product_name):
     })
 
 
-def product(request, product_name):
-    theproduct = Product.objects.get(name=product_name)
+def product(request, product_slug):
+    theproduct = get_object_or_404(Product, slug=product_slug)
     comments = theproduct.comments.all()
     product_bids = theproduct.bids.all()
     if request.method == "POST":

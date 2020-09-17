@@ -5,9 +5,11 @@
 {% block body %}
     {% if products %}
         {% for product in products %}
-            <a href="{% url 'product' product %}"><h1>{{ product }}</h1></a>
+            <a href="{% url 'product' product.get_url_path %}"><h1>{{ product }}</h1></a>
         {% endfor %}
     {% else %}
-        watchlist is empty
+        <div class="alert alert-warning" role="alert">
+            Empty Watchlist
+        </div>
     {% endif %}
 {% endblock %}
