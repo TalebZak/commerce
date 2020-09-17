@@ -5,90 +5,125 @@
     {{ product.name }}
 {% endblock %}
 {% block body %}
-    {% if request.user == product.owner %}
-        <a href="{% url 'close_listing' product.get_url_path %}">Close listing</a>
-    {% endif %}
-    <div class="container">
-        <div class="col-xs-4 item-photo" >
-            <img src={{ product.image.url }} style="max-width:50%" class="text-center">
-        </div>
-        <div class="col-xs-5" style="border:0px solid gray">
-            <h3>{{ product.name }}</h3>
-        </div>
-        <h5 style="color:#337ab7">Owner: {{ product.owner }} </h5>
-        <div>
-            <h6>
-                <small>
-                    Starter Price:
-                </small>
-            </h6>
-            <h3 style="margin-top:0px;">
-                {{ product.price }}
-            </h3>
-        </div>
-        <div class="col-xs-9">
-            <div style="width:100%;border-top:1px solid silver">
-                <p class="text-break">
-                    {{ product.description }}
+    <div class="container-fluid">
+        <div class="card mt-4">
+            <img src='{{ product.image.url }}' style="max-width:25%"
+                 class="card-img-top img-fluid">
+            <div class="card-body">
 
-                </p>
+                <div style="width:100%;border-top:1px solid silver">
+                    <h4>{{ product.name }}</h4>
+                    <h4>Starter Price: ${{ product.price }}</h4>
+                    {% if user.is_authenticated and product.status%}
+                        <small>
+                            <p>Make a bid:</p>
+                            <form action="{% url 'make_bid' product.get_url_path%}" method="post">
+                                {% csrf_token %}
+                                <div class="col-4">
+                                    {{ biddingform|crispy }}
+                                </div>
+                                <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+                            </form>
+                        </small>
+
+                    {% endif %}
+                    <h3 class="card-title">BY: {{ product.owner }}</h3>
+
+                </div>
+                <div style="width:100%;border-top:1px solid silver">
+                    <p class="card-text">{{ product.description }} </p>
+                </div>
+                <hr>
+                {% if product.status %}
+                    {% if currentbid %}
+                        {% if request.user == currentbid.bidder %}
+                            <span class="text-success"> You have the highest bid with a value of: {{ currentbid.value }}</span>
+                        {% else %}
+                            <span class="text-danger">Current bid: {{ currentbid.value }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-primary">No bid currently</span>
+                    {% endif %}
+                {% else %}
+                    {% if currentbid %}
+                        {% if request.user == currentbid.bidder %}
+                            <span class="text-success"> You successfully secured the product please contact the owner on the following email: {{ product.owner.email }}</span>
+                        {% else %}
+                            <span class="text-danger">This auction was won by another user</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-primary">The owner of the product was closed before any bids were made</span>
+                    {% endif %}
+                {% endif %}
+
+                <hr>
+                <div>
+                    {% if product.status %}
+                        {% if request.user == product.owner %}
+                            <a href="{% url 'close_listing' product.get_url_path %}" class="btn btn-primary">Close listing</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if product.status %}
+                        {% if user.is_authenticated %}
+                            {% if watchlist|search:product.get_url_path%}
+                                <a href="{% url 'remove_from_watchlist' product.get_url_path %}" class="btn btn-danger">Remove From Watchlist</a>
+                            {% else %}
+                                <a href="{% url 'add_watchlist' product.get_url_path%}" class="btn btn-primary">Add To watchlist</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                </div>
 
             </div>
-        </div>
-
-    </div>
-
-    <h1>
-        Comments:
-    </h1>
-    {% if user.is_authenticated %}
-        {% if watchlist|search:product.name%}
-            <a href="{% url 'remove_from_watchlist' product.get_url_path %}">Remove</a>
-        {% else %}
-            <a href="{% url 'add_watchlist' product.get_url_path%}">ADD</a>
-        {% endif %}
-        <form method="post">
-        {% csrf_token %}
-        <div class="col-4">
-            {{ commentform|crispy }}
-        </div>
-
-        <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-        </form>
-    {% endif %}
-    <div>
-        {% if comments %}
-            {% for comment in comments  %}
-                <div class="comments" style="padding: 10px;">
-                <h5>BY:{{ comment.writer }}</h5>
-                Subject:{{ comment.subject }}
-                {{ comment.body|linebreaks }}
+            <div class="card card-outline-secondary my-4">
+                <div class="card-header">
+                    Comments
                 </div>
-            {% endfor %}
+                <div class="card-body">
+                    {% if comments %}
+                        <small>
+                            {% if user.is_authenticated %}
+                                <p>Leave a comment</p>
+                                <form method="post">
+                                {% csrf_token %}
+                                <div class="col-4">
+                                    {{ commentform|crispy }}
+                                </div>
 
-        {% else %}
-            <h1>No comments for now</h1>
-        {% endif %}
+                                <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+                                </form>
+                            {% endif %}
+                        </small>
+
+                        <hr>
+                        {% for comment in comments %}
+                            <p>Subject: {{ comment.subject }}</p>
+                            <p>{{ comment.body|linebreaks }}</p>
+                            <small class="text-muted">Posted by {{ comment.writer }}</small>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        <small class="text-primary">No comments for now</small>
+                        <small>
+                            {% if user.is_authenticated %}
+                                <p>Leave a comment</p>
+                                <form method="post">
+                                {% csrf_token %}
+                                <div class="col-4">
+                                    {{ commentform|crispy }}
+                                </div>
+
+                                <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+                                </form>
+                            {% endif %}
+                        </small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 
-    {% if user.is_authenticated %}
-        <form action="{% url 'make_bid' product.get_url_path%}" method="post">
-        {% csrf_token %}
-        <div class="col-4">
-            {{ biddingform|crispy }}
-        </div>
-        <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-        </form>
-    {% endif %}
 
-    {% if product.status %}
-        {% if currentbid %}
-            <h1>current bid made by {{ currentbid.bidder }}, value: {{ currentbid.value }}</h1>
-        {% else %}
-            no bids currently
-        {% endif %}
-    {% else %}
-        you can't make bids anymore
-    {% endif %}
 
 {% endblock %}

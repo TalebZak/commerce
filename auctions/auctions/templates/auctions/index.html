@@ -2,41 +2,50 @@
 {% load crispy_forms_tags %}
 {% load customtags %}
 {% block body %}
-    <form action="{% url 'category_select' %}" method="post">
+    <div class="container">
+         <form action="{% url 'category_select' %}" method="post">
         {% csrf_token %}
-        <div class = "col-1">
+        <div class = "col-3">
             {{categoryform|crispy}}
             <input class="btn btn-primary" type="submit" value="Filter">
         </div>
 
 
-    </form>
-    {% if products %}
-        <h2>Active Listings</h2>
-        {% for product in products %}
-            {% if product.status %}
-            <div class="d-flex flex-row">
-                <div class="p-2">
-                    <div class="card" style="width: 18rem;">
-                      <img src="{{product.image.url}}" class="card-img-top" alt="{{product.name}}">
-                      <div class="card-body">
-                        <h5 class="card-title">{{ product }}</h5>
-                          <p class="card-text bg-light" style="transform: rotate(0);">
-                              {{ product.price }}$
-                          </p>
-                        <p class="card-text">{{product.description}}</p>
-                        <a href="{% url 'product' product.get_url_path %}" class="btn btn-primary stretched-link">Check</a>
-                      </div>
+        </form>
+        {% if products %}
+            <h2>Active Listings</h2>
+            <div class="row">
+            {% for product in products %}
+                {% if product.status %}
+                    {% if  forloop.counter0|divisibleby:5%}
+                        </div><br><div class="row">
+                    {% endif %}
+                <div class="d-flex flex-row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100" style="width: 18rem;">
+                          <img src="{{product.image.url}}" class="card-img-top" alt="{{product.name}}">
+                          <div class="card-body">
+                            <h5 class="card-title">{{ product }}</h5>
+                              <p class="card-text bg-light" style="transform: rotate(0);">
+                                  {{ product.price }}$
+                              </p>
+                            <p class="card-text">{{product.description}}</p>
+                            <div class="card-footer">
+                                <a href="{% url 'product' product.get_url_path %}" class="btn btn-primary stretched-link">Check</a>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                 </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No products available
             </div>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <div class="alert alert-warning" role="alert">
-            No products available
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
+
 
 
 {% endblock %}

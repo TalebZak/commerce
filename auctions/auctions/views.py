@@ -124,8 +124,11 @@ def product(request, product_slug):
             new_comment.listing = theproduct
             new_comment.writer = request.user
             new_comment.save()
+    watchlist = None
+    if request.user.is_authenticated:
+        watchlist = Watchlist.objects.filter(user=request.user)
     return render(request, "auctions/product.html", {
-        "watchlist": Watchlist.objects.filter(user=request.user),
+        "watchlist":  watchlist,
         "currentbid": product_bids.order_by('-value').first(),
         "biddingform": BiddingForm(),
         "commentform": CommentForm(),
