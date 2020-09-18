@@ -3,7 +3,6 @@ Commerce is an auctions platform where users can put products for sale
 then people would start bidding for them. 
 When the product owner closes the auction, the product goes to the user 
 who made the highest bid.
-![Product page](personal pics/productpage.jpg)
 ## Learning outcomes
 - Working with Django Models
 - Using custom template filters
