@@ -18,6 +18,7 @@ class Category(models.TextChoices):
 
 
 class Product(models.Model):
+    """The model of my product, includes a slug, price, a description and owner"""
     slug = models.SlugField(unique=True)
     status = models.BooleanField(default=True)
     product_type = models.CharField(max_length=3,
@@ -32,20 +33,23 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    # returns the url of the product
     def get_url_path(self):
         return f'{self.slug}'
 
-
+'''Creates a slug field, by assigning a none value first
+   , takes results from the filter method, 
+   then does a recursive call to make the slug of the product'''
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.name)
     if new_slug:
         slug = new_slug
-    result = Product.objects.filter(slug=slug).order_by('-id')
+    result = Product.objects.filter(slug=slug).order_by('-id')#order by serves as a way to take the element that was recently added
     exists = result.exists()
-    if exists:
+    if exists:#if a product with the same name exists, we will rely on the recent element
         new_slug = "%s-%s" % (slug, result.first().id)
         return create_slug(instance, new_slug=new_slug)
-    return slug
+    return slug#return the slug
 
 
 def pre_save_post_receiver(sender, instance, *args, **kwargs):
@@ -73,7 +77,7 @@ class Bid(models.Model):
     def __str__(self):
         return f"current bid: {self.value}$"
 
-    def __le__(self, other):
+    def __le__(self, other):#operator '<=' overloading for ease of comparison between bids
         if other:
             return self.value <= other.value
         return False

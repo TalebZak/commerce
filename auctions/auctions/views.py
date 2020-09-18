@@ -7,21 +7,22 @@ from django.urls import reverse
 from .forms import *
 from .models import *
 
-
+"""the page that the user would say when they get to the site,
+   returns all the products along with a category form to allow filtering"""
 def index(request):
     return render(request, "auctions/index.html", {
         "products": Product.objects.all(),
         "categoryform": CategorySelectionForm
     })
 
-
+"""a close listing method, to allow the owner of the product to close the bidding"""
 def close_listing(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     product.status = False
     product.save(update_fields=['status'])
     return HttpResponseRedirect(reverse('product', args=(product_slug,)))
 
-
+"""to allow a user to remove a product from his watchlist"""
 def remove_from_watchlist(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     watchlist_item = Watchlist.objects.get(product=product)
@@ -33,9 +34,9 @@ def add_listing(request):
     if request.method == "POST":
         form = ListingCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            newlisting = form.save(commit=False)
+            newlisting = form.save(commit=False)# saves the content of the form in a class instance without inserting it in the DB
             newlisting.owner = request.user
-            newlisting.save()
+            newlisting.save()#save the product in the DB
             return HttpResponseRedirect(reverse('product', args=(newlisting.get_url_path(),)))
         return render(request, "auctions/listingcreation.html", {
             "addform": form
@@ -44,7 +45,7 @@ def add_listing(request):
         "addform": ListingCreationForm()
     })
 
-
+"""filtering the products by category"""
 def category_product(request, category):
     category_products = Product.objects.filter(product_type=category)
     return render(request, "auctions/category_products.html", {
@@ -62,12 +63,12 @@ def select_category(request):
         return HttpResponseRedirect(reverse('index'))
     return HttpResponseRedirect(reverse('index'))
 
-
-@login_required
+"""the content of a user's watchlist is returned to be displayed on the watchlist page"""
+@login_required# a user who isn't signed in doesn't have a watchlist
 def watchlist(request):
     my_watchlist = Watchlist.objects.filter(user=request.user)
     return render(request, "auctions/watchlist.html", {
-        "products": [element.product for element in my_watchlist]
+        "products": [element.product for element in my_watchlist]# returning all products in the user's watchlist
     })
 
 
@@ -90,6 +91,7 @@ def make_bid(request, product_slug):
             bidding_form.full_clean()
             newbid = bidding_form.save(commit=False)
             if newbid.value <= theproduct.price or newbid <= product_bids.order_by('-value').first():
+                """if a bid's value is less than the product's price or less than a product's highest bid, the bidding is cancelled"""
                 return render(request, "auctions/product.html", {
                     "watchlist": Watchlist.objects.filter(user=request.user),
                     "bids": product_bids,
@@ -98,6 +100,7 @@ def make_bid(request, product_slug):
                     "comments": comments,
                     "product": theproduct
                 })
+            """if the bidding is successful it gets saved"""
             newbid.bidder = request.user
             newbid.listing = theproduct
             newbid.save()
@@ -111,11 +114,12 @@ def make_bid(request, product_slug):
         "product": theproduct
     })
 
-
+"""generate a product's page, with bids and comments"""
 def product(request, product_slug):
     theproduct = get_object_or_404(Product, slug=product_slug)
     comments = theproduct.comments.all()
     product_bids = theproduct.bids.all()
+    """adding comments to a product"""
     if request.method == "POST":
         commentform = CommentForm(request.POST)
         if commentform.is_valid():
@@ -136,7 +140,7 @@ def product(request, product_slug):
         "product": theproduct
     })
 
-
+"""the login method to allow the user to get connected in the app"""
 def login_view(request):
     if request.method == "POST":
 
@@ -178,6 +182,7 @@ def register(request):
                     "RegistrationForm": RegistrationForm(),
                     "message": "Passwords must match."
                 })
+            """to avoid the issue of duplicate emails in the app"""
             if User.objects.filter(email=email).exists():
                 return render(request, "auctions/register.html", {
                     "RegistrationForm": RegistrationForm(),

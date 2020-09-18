@@ -1,6 +1,8 @@
 from django.forms import ModelForm, CharField, PasswordInput, Form, ChoiceField
 from .models import *
 
+"""used Model forms instead of django forms for the ease of use and allow reusability"""
+
 
 class RegistrationForm(ModelForm):
     confirmation = CharField(widget=PasswordInput)
@@ -8,6 +10,7 @@ class RegistrationForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        """making the email, last and first name fields mandatory for registration"""
         self.fields['email'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
